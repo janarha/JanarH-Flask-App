@@ -1,0 +1,7 @@
+db_host: "192.168.1.102"
+db_port: 5432
+db_name: appdb
+db_user: appuser
+db_password: apppassword
+
+app_dir: /opt/studentapp

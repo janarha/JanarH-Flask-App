@@ -1,0 +1,15 @@
+proxmox_api_url  = "https://192.168.1.10:8006/api2/json"
+proxmox_user     = "root@pam"
+proxmox_password = "your-proxmox-password"
+proxmox_node     = "pve"
+ubuntu_template  = "ubuntu-2404-cloud"
+storage_pool     = "local-lvm"
+
+vm_user        = "ubuntu"
+vm_password    = "your-vm-password"
+ssh_public_key = "ssh-ed25519 AAAA... your-key-here"
+
+gateway      = "192.168.1.1"
+web01_ip     = "192.168.1.101"
+db01_ip      = "192.168.1.102"
+monitor01_ip = "192.168.1.103"

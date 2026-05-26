@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Flask App</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f4f8;
+            color: #333;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #1a202c;
+        }
+        p.subtitle {
+            color: #718096;
+            margin-bottom: 32px;
+        }
+        form {
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+        form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+        form button {
+            margin-top: 12px;
+            background: #3182ce;
+            color: #fff;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        form button:hover { background: #2b6cb0; }
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            color: #2d3748;
+        }
+        .message-list { list-style: none; }
+        .message-list li {
+            background: #fff;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .message-list .content { font-size: 1rem; margin-bottom: 4px; }
+        .message-list .timestamp { font-size: 0.8rem; color: #a0aec0; }
+        .empty { color: #a0aec0; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Message Board</h1>
+        <p class="subtitle">Deployed with Flask, Docker, Terraform &amp; Ansible</p>
+
+        <form method="POST" action="/">
+            <label for="message">Leave a message</label>
+            <textarea id="message" name="message" placeholder="Type your message here…" required></textarea>
+            <button type="submit">Submit</button>
+        </form>
+
+        <h2>Submitted Messages</h2>
+        {% if messages %}
+        <ul class="message-list">
+            {% for content, created_at in messages %}
+            <li>
+                <div class="content">{{ content }}</div>
+                <div class="timestamp">{{ created_at.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="empty">No messages yet. Be the first to submit one!</p>
+        {% endif %}
+    </div>
+</body>
+</html>

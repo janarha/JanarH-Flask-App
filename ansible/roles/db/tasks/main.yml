@@ -1,0 +1,68 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install PostgreSQL
+  apt:
+    name:
+      - postgresql
+      - postgresql-contrib
+      - python3-psycopg2
+      - ufw
+    state: present
+
+- name: Enable and start PostgreSQL
+  systemd:
+    name: postgresql
+    enabled: true
+    state: started
+
+- name: Create application database
+  become_user: postgres
+  postgresql_db:
+    name: "{{ db_name }}"
+    state: present
+
+- name: Create application database user
+  become_user: postgres
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    priv: "ALL"
+    db: "{{ db_name }}"
+    state: present
+
+- name: Allow PostgreSQL to listen on all interfaces
+  lineinfile:
+    path: /etc/postgresql/16/main/postgresql.conf
+    regexp: "^#?listen_addresses"
+    line: "listen_addresses = '*'"
+    state: present
+  notify: Restart PostgreSQL
+
+- name: Allow web-01 to connect to PostgreSQL (pg_hba.conf)
+  lineinfile:
+    path: /etc/postgresql/16/main/pg_hba.conf
+    line: "host    {{ db_name }}    {{ db_user }}    {{ hostvars['web-01']['ansible_host'] }}/32    md5"
+    state: present
+  notify: Restart PostgreSQL
+
+- name: Configure UFW — allow SSH
+  ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+
+- name: Configure UFW — allow PostgreSQL from web-01
+  ufw:
+    rule: allow
+    port: "5432"
+    proto: tcp
+    src: "{{ hostvars['web-01']['ansible_host'] }}"
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+    policy: deny

@@ -1,0 +1,50 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Install monitoring utilities
+  apt:
+    name:
+      - htop
+      - iotop
+      - nmap
+      - net-tools
+      - curl
+      - wget
+      - jq
+      - sysstat
+      - ncdu
+      - nethogs
+      - tcpdump
+      - lsof
+      - dnsutils
+    state: present
+
+- name: Enable sysstat data collection
+  lineinfile:
+    path: /etc/default/sysstat
+    regexp: "^ENABLED="
+    line: 'ENABLED="true"'
+  notify: Restart sysstat
+
+- name: Install Prometheus Node Exporter
+  apt:
+    name: prometheus-node-exporter
+    state: present
+
+- name: Enable and start Node Exporter
+  systemd:
+    name: prometheus-node-exporter
+    enabled: true
+    state: started
+
+- name: Print monitoring summary
+  debug:
+    msg:
+      - "Monitoring tools installed on monitor-01"
+      - "Node Exporter available at http://{{ ansible_host }}:9100/metrics"
+      - "Run 'htop' to view live process stats"
+      - "Run 'iotop' to view disk I/O"
+      - "Run 'nethogs' to view per-process bandwidth"
